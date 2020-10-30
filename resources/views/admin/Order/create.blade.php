@@ -60,7 +60,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     {{ Form::label('time', 'Time', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    {{ Form::time('time', $item_details_data->time ?? date('H:i A'), ['id' => '', 'class' => 'form-control']) }}
+                    {{ Form::time('time', $item_details_data->time ?? Carbon\Carbon::now()->format('H:i'), ['id' => '', 'class' => 'form-control']) }}
                 </div>
             </div>
         </div>
@@ -73,8 +73,14 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    {{ Form::label('receiver_name', 'Receiver Name', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    {{ Form::text('receiver_name', $item_details_data->receiver_name ?? '', ['id' => 'receiver_name', 'class' => 'form-control']) }}
+                    {{ Form::label('receiver_id', 'Receiver Name', ['class' => 'control-label']) }} <span class="text-danger">*</span>
+                    <select class="form-control" id="receiver_id" name="receiver_id">
+                        <option value=""> - Select User - </option>
+                        @forelse($users as $user_key => $user_value)
+                            <option value="<?php echo $user_value['id']; ?>" <?php echo (Auth::user()->id == $user_value['id']) ? 'Selected' : ''; ?> ><?php echo $user_value['first_name']; ?></option>
+                        @empty
+                        @endforelse
+                    </select>
                 </div>
             </div>
         </div>
@@ -82,24 +88,24 @@
             <div class="col-md-3">
                 <div class="form-group">
                     {{ Form::label('carid', 'Car', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    <select class="form-control text-capitalize" id="carid" name="carid">
-                        <option>Select</option>
-                        <option>Mercedes</option>
-                        <option>Hyundai</option>
-                        <option>Tata</option>
-                       
+                    <select class="form-control" id="car_id" name="car_id">
+                        <option value=""> - Select Car - </option>
+                        @forelse($cars as $car_key => $car_value)
+                            <option value="<?php echo $car_value['id']; ?>" ><?php echo $car_value['car_name']; ?></option>
+                        @empty
+                        @endforelse
                     </select>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     {{ Form::label('modelid', 'Model', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    <select class="form-control text-capitalize" id="modelid" name="modelid">
-                        <option>Select</option>
-                        <option>A - Class</option>
-                        <option>S - Class</option>
-                        <option>C - Class</option>
-                       
+                    <select class="form-control" id="car_model_id" name="car_model_id">
+                        <option value=""> - Select Car Model - </option>
+                        @forelse($carmodels as $car_model_key => $car_model_value)
+                            <option value="<?php echo $car_model_value['id']; ?>" ><?php echo $car_model_value['model_name']; ?></option>
+                        @empty
+                        @endforelse
                     </select>
                 </div>
             </div>
