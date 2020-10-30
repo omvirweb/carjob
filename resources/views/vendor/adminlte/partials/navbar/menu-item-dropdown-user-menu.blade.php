@@ -20,10 +20,10 @@
         @if(config('adminlte.usermenu_image'))
             <img src="{{ Auth::user()->adminlte_image() }}"
                  class="user-image img-circle elevation-2"
-                 alt="{{ Auth::user()->name }}">
+                 alt="{{ Auth::user()->first_name }}">
         @endif
         <span @if(config('adminlte.usermenu_image')) class="d-none d-md-inline" @endif>
-            {{ Auth::user()->name }}
+            {{ Auth::user()->first_name }}
         </span>
     </a>
 

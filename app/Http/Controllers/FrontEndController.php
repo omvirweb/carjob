@@ -42,7 +42,7 @@ class FrontEndController extends Controller
                 'email' => $request->email,
                 'role' => [User::ROLE_ADMIN, User::ROLE_USER, User::ROLE_DISTRIBUTOR],
                 'password' => $request->password,
-                'isActive' => '0'
+                'isActive' => '1'
             );
 
             if (Auth::attempt($credentials,$remember)) {
