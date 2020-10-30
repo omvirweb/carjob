@@ -396,30 +396,32 @@
 <div class="modal fade" id="AddPartTextModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <input type="hidden" name="car_part_name" id="car_part_name">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title"></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <div class="form-group">
-                    {{ Form::label('car_part_detail', 'Add Detail', ['class' => 'control-label']) }}
-                    <textarea name="car_part_detail" id="car_part_detail" class="form-control"></textarea>
+            <form class="form-horizontal" method="post" id="add_car_part_details">
+                <input type="hidden" name="car_part_name" id="car_part_name">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="form-group">
-                    {{ Form::label('car_part_image', 'Upload Part Image', ['class' => 'control-label']) }}
-                    {{ Form::file('car_part_image', []) }}
-                </div>
-            </div>
 
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        {{ Form::label('car_part_detail', 'Add Detail', ['class' => 'control-label']) }}
+                        <textarea name="car_part_detail" id="car_part_detail" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        {{ Form::label('car_part_image', 'Upload Part Image', ['class' => 'control-label']) }}
+                        {{ Form::file('car_part_image', []) }}
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -466,6 +468,7 @@
             $('#AddPartTextModal').on('hidden.bs.modal', function () {
                 $('#car_part_name').val('');
                 $('#car_part_detail').val('');
+                $('#car_part_image').val('');
             });
             $(document).on('submit', '#add_car_part_details', function () {
                 var car_part_name = $('#car_part_name').val();
