@@ -20,6 +20,7 @@
         "laravelcollective/html": "^6.1",
         "phpdocumentor/reflection-docblock": "^5.1",
         "spatie/laravel-permission": "^3.13",
+        "yajra/laravel-datatables-oracle": "~9.0",
         "yoeunes/toastr": "^1.2"
     },
     "require-dev": {
