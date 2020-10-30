@@ -224,20 +224,21 @@ return [
 //            'icon'        => 'far fa-fw fa-object-group',
 //        ],
         [
-            'text'        => 'Order',
+            'text'        => 'Orders',
             'url'         => '#',
             'icon'        => 'fas fa-fw fa-file',
             'submenu' => [
                 [
                     'text' => 'create_new',
                     'url'  => 'admin/order/create',
+                    'active' => ['admin/order/*', 'order', 'order/*', 'regex:@^edit/[0-9]+$@'],
                     'icon_color' => 'cyan',
                 ],
-//                [
-//                    'text' => 'list',
-//                    'url'  => 'admin/item-details',
-//                    'icon_color' => 'cyan',
-//                ],
+                [
+                    'text' => 'list',
+                    'url'  => 'admin/order',
+                    'icon_color' => 'cyan',
+                ],
             ],
         ],
         /*[
