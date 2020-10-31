@@ -61,14 +61,16 @@
             <div class="col-md-3">
                 <div class="form-group">
                     {{ Form::label('order_date', 'Date', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    {{ Form::text('order_date', $order_data->order_date ?? date('d-m-Y'), ['id' => '', 'class' => 'form-control datepicker', 'required' => 'required']) }}
+                    {{ Form::text('order_date', $order_data->order_date ?? date('d-m-Y'), ['id' => '', 'class' => 'form-control datepicker', 'required' => 'required', 'autocomplete' => 'off']) }}
                 </div>
             </div>
             <div class="col-md-3">
+                @if(isset($order_data->order_time))
                 <div class="form-group">
-                    {{ Form::label('order_time', 'Time', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    {{ Form::time('order_time', $order_data->order_time ?? Carbon\Carbon::now()->format('H:i'), ['id' => '', 'class' => 'form-control', 'required' => 'required']) }}
+                    {{ Form::label('order_time', 'Time', ['class' => 'control-label']) }} <br>
+                    {{ $order_data->order_time }}
                 </div>
+                @endif
             </div>
         </div>
         <div class="row">
@@ -125,7 +127,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     {{ Form::label('expected_delivery_date', 'Expected Date of Delivery', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    {{ Form::text('expected_delivery_date', $order_data->expected_delivery_date ?? '', ['id' => 'expected_delivery_date', 'class' => 'form-control datepicker', 'required' => 'required']) }}
+                    {{ Form::text('expected_delivery_date', $order_data->expected_delivery_date ?? '', ['id' => 'expected_delivery_date', 'class' => 'form-control datepicker', 'required' => 'required', 'autocomplete' => 'off']) }}
                 </div>
             </div>
             <div class="col-md-3">
@@ -150,14 +152,6 @@
         
         {{ Form::close() }}
         <br><hr>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('photo', 'Photo', ['class' => 'control-label']) }}
-                    {{ Form::file('photo', []) }}
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
@@ -339,55 +333,6 @@
                     {{ Form::label('', 'nano ceramic maintenance visit 1', ['class' => 'control-label']) }}
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('hood', 'Hood', ['class' => 'control-label']) }}
-                    {{ Form::file('hood', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('roof', 'Roof', ['class' => 'control-label']) }}
-                    {{ Form::file('roof', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('door_1', 'Door 1', ['class' => 'control-label']) }}
-                    {{ Form::file('door_1', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('door_2', 'Door 2', ['class' => 'control-label']) }}
-                    {{ Form::file('door_2', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('door_3', 'Door 3', ['class' => 'control-label']) }}
-                    {{ Form::file('door_3', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('door_4', 'Door 4', ['class' => 'control-label']) }}
-                    {{ Form::file('door_4', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {{ Form::label('trunk', 'Trunk', ['class' => 'control-label']) }}
-                    {{ Form::file('trunk', []) }}
-                </div>
-            </div>
-            <div class="col-md-3"></div>
         </div>
     </div>
 </div>
@@ -396,32 +341,31 @@
 <div class="modal fade" id="AddPartTextModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" method="post" id="add_car_part_details">
-                <input type="hidden" name="car_part_name" id="car_part_name">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
+            <input type="hidden" name="car_part_detail_id" id="car_part_detail_id">
+            <input type="hidden" name="car_part_name" id="car_part_name">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
 
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="form-group">
-                        {{ Form::label('car_part_detail', 'Add Detail', ['class' => 'control-label']) }}
-                        <textarea name="car_part_detail" id="car_part_detail" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        {{ Form::label('car_part_image', 'Upload Part Image', ['class' => 'control-label']) }}
-                        {{ Form::file('car_part_image', []) }}
-                    </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    {{ Form::label('car_part_detail', 'Add Detail', ['class' => 'control-label']) }}
+                    <textarea name="car_part_detail" id="car_part_detail" class="form-control"></textarea>
                 </div>
+                <div class="form-group">
+                    {{ Form::label('car_part_image', 'Upload Part Image', ['class' => 'control-label']) }}
+                    {{ Form::file('car_part_image', []) }}
+                </div>
+            </div>
 
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </form>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" id="add_car_part_details" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -435,6 +379,16 @@
     <script src="{{asset('vendor/parsleyjs/dist/parsley.js') }}"></script>
     <script>
         var car_part_details = {};
+        <?php if (isset($order_data->car_part_details)) { ?>
+            var li_car_part_details = JSON.parse('<?php echo $order_data->car_part_details; ?>');
+            console.log(li_car_part_details);
+            if (li_car_part_details != '') {
+                $.each(li_car_part_details, function (index, value) {
+                    var value_car_part_name = value.car_part_name;
+                    car_part_details[value_car_part_name] = value;
+                });
+            }
+        <?php } ?>
         $(document).ready( function(){
             $('.datepicker').datepicker({
                 format: 'dd-mm-yyyy',
@@ -451,13 +405,17 @@
             
             $('img[usemap]').rwdImageMaps();
             $(document).on('click', 'area', function () {
+                console.log(car_part_details);
                 $('#AddPartTextModal').modal('show');
                 $('.modal-title').html('For - ' + $(this).attr('alt'));
                 var car_part_name = $(this).attr('href');
-                $('#car_part_name').val(car_part_name);
-                if(car_part_details[car_part_name]){
-                    var car_part_detail = car_part_details[car_part_name];
-                    $('#car_part_detail').val(car_part_detail);
+                var get_car_part_details = getObjects(car_part_details, 'car_part_name', car_part_name);
+                if($.isEmptyObject(get_car_part_details)){
+                    $('#car_part_name').val(car_part_name);
+                } else {
+                    $('#car_part_detail_id').val(car_part_details[car_part_name].car_part_detail_id);
+                    $('#car_part_name').val(car_part_details[car_part_name].car_part_name);
+                    $('#car_part_detail').val(car_part_details[car_part_name].car_part_detail);
                 }
             });
 
@@ -466,15 +424,21 @@
             });
 
             $('#AddPartTextModal').on('hidden.bs.modal', function () {
+                $('#car_part_detail_id').val('');
                 $('#car_part_name').val('');
                 $('#car_part_detail').val('');
                 $('#car_part_image').val('');
             });
-            $(document).on('submit', '#add_car_part_details', function () {
+            $(document).on('click', '#add_car_part_details', function () {
+                new_details = {};
+                new_details['car_part_detail_id'] = $('#car_part_detail_id').val();
                 var car_part_name = $('#car_part_name').val();
-                car_part_details[car_part_name] = $('#car_part_detail').val();
+                new_details['car_part_name'] = $('#car_part_name').val();
+                new_details['car_part_detail'] = $('#car_part_detail').val();
+                car_part_details[car_part_name] = new_details;
                 console.log(car_part_details);
                 $('#AddPartTextModal').modal('hide');
+                $('#save_order').submit();
                 return false;
             });
             
@@ -486,6 +450,15 @@
 
             $(document).on('submit', '#save_order', function(){
                 var postData = new FormData(this);
+                if($.isEmptyObject(car_part_details)){
+                    bootbox.alert('<span class="text-danger">Add atleast one Car Part Details</span>');
+                    return false;
+                }
+                console.log('car_part_details ');
+                console.log(car_part_details); 
+                var car_part_details_stringify = JSON.stringify(car_part_details);
+//                console.log(car_part_details_stringify); return false;
+                postData.append('car_part_details', car_part_details_stringify);
                 $('.module_save_btn').attr('disabled', 'disabled');
                 $.ajax({
                     url: "{{ URL::to('/admin/save_order') }}",
@@ -500,7 +473,17 @@
                         $('.module_save_btn').removeAttr('disabled', 'disabled');
                         var json = $.parseJSON(response);
                         if (json['success'] == 'Added') {
+                            window.location.href =  json['order_id'] + "/edit";
+                        } else if (json['success'] == 'Updated') {
                             bootbox.alert('<span class="text-success">Order Successfully Created</span>');
+                            if (json['car_part_details']){
+                                var li_car_part_details = JSON.parse(json['car_part_details']);
+                                if (li_car_part_details != '') {
+                                    $.each(li_car_part_details, function (index, value) {
+                                        car_part_details[value.car_part_name] = value;
+                                    });
+                                }
+                            }
                         } else {
                             bootbox.alert('<span class="text-danger">Something error occurred</span>');
                             return false;
@@ -511,5 +494,18 @@
                 return false;
             });
         });
+
+        function getObjects(obj, key, val) {
+            var objects = [];
+            for (var i in obj) {
+                if (!obj.hasOwnProperty(i)) continue;
+                if (typeof obj[i] == 'object') {
+                    objects = objects.concat(getObjects(obj[i], key, val));
+                } else if (i == key && obj[key] == val) {
+                    objects.push(obj);
+                }
+            }
+            return objects;
+        }
     </script>
 @stop

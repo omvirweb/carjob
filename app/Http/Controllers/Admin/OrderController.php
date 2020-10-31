@@ -8,6 +8,7 @@ use App\Models\Orders;
 use App\Models\Cars;
 use App\Models\CarModels;
 use App\Models\User;
+use App\Models\OrdersCarPartsDetails;
 use Auth;
 use File;
 use URL;
@@ -51,11 +52,11 @@ class OrderController extends Controller
             $order = Orders::where('id', $request->id)->first();
         } else {
             $order = new Orders();
+            $order->order_time = date("H:i:s");
         }
         $order->name = !empty($request->name) ? $request->name : NULL;
         $order->mobile_no = !empty($request->mobile_no) ? $request->mobile_no : NULL;
         $order->order_date = !empty($request->order_date) ? date("Y-m-d", strtotime($request->order_date)) : NULL;
-        $order->order_time = !empty($request->order_time) ? date("H:i:s", strtotime($request->order_time)) : NULL;
         $order->car_id = !empty($request->car_id) ? $request->car_id : 0;
         $order->car_model_id = !empty($request->car_model_id) ? $request->car_model_id : 0;
         $order->model_year = !empty($request->model_year) ? $request->model_year : NULL;
@@ -67,16 +68,45 @@ class OrderController extends Controller
 
         $return = array();
         if($order->id){
-//            $order_status_history = new OrderStatusHistory();
-//            $order_status_history->user_id = !empty($user->id) ? $user->id : 0;
-//            $order_status_history->order_id = $order->id;
-//            $order_status_history->order_status = '1';
-//            $order_status_history->save();
+            if(!empty($request->car_part_details)){
+                $car_part_details = json_decode($request->car_part_details);
+                foreach($car_part_details as $car_part_detail){
+                    if(!empty($car_part_detail->car_part_detail_id)){
+                        $orders_car_parts_details = OrdersCarPartsDetails::where('id', $car_part_detail->car_part_detail_id)->first();
+                    } else {
+                        $orders_car_parts_details = new OrdersCarPartsDetails();
+                    }
+                    $orders_car_parts_details->order_id = $order->id;
+                    $orders_car_parts_details->car_part_name = $car_part_detail->car_part_name;
+                    $orders_car_parts_details->car_part_detail = $car_part_detail->car_part_detail;
+                    $orders_car_parts_details->save();
+                }
+                
+                $car_part_details = OrdersCarPartsDetails::where('order_id', $order->id)->get();
+                if(!empty($car_part_details)){
+                    $car_part_details_arr = Array();
+                    foreach($car_part_details as $car_part_detail){
+                        $car_part_detail_arr = Array();
+                        $car_part_detail_arr['car_part_detail_id'] = $car_part_detail->id;
+                        $car_part_detail_arr['order_id'] = $car_part_detail->order_id;
+                        $car_part_detail_arr['car_part_name'] = $car_part_detail->car_part_name;
+                        $car_part_detail_arr['car_part_detail'] = $car_part_detail->car_part_detail;
+                        $car_part_detail_arr['car_part_image'] = $car_part_detail->car_part_image;
+                        $car_part_details_arr[] = $car_part_detail_arr;
+                    }
+                    $return['car_part_details'] = json_encode($car_part_details_arr);
+                }
+            }
 
     //        Session::flash('status', 'success');
     //        Session::flash('message', 'Order Successfully Created');
-            $return['success'] = "Added";
             $return['order_id'] = $order->id;
+            
+            if(!empty($request->id)){
+                $return['success'] = "Updated";
+            } else {
+                $return['success'] = "Added";
+            }
         }
         print json_encode($return);
         exit;
@@ -94,8 +124,22 @@ class OrderController extends Controller
         if (!empty($order_data)) {
             $data = array();
             $order_data->order_date = !empty($order_data->order_date) ? date("d-m-Y", strtotime($order_data->order_date)) : '';
-            $order_data->order_time = !empty($order_data->order_time) ? date("H:i", strtotime($order_data->order_time)) : '';
+            $order_data->order_time = !empty($order_data->order_time) ? date("h:i A", strtotime($order_data->order_time)) : '';
             $order_data->expected_delivery_date = !empty($order_data->expected_delivery_date) ? date("d-m-Y", strtotime($order_data->expected_delivery_date)) : '';
+            $car_part_details = OrdersCarPartsDetails::where('order_id', $order_data->id)->get();
+            if(!empty($car_part_details)){
+                $car_part_details_arr = Array();
+                foreach($car_part_details as $car_part_detail){
+                    $car_part_detail_arr = Array();
+                    $car_part_detail_arr['car_part_detail_id'] = $car_part_detail->id;
+                    $car_part_detail_arr['order_id'] = $car_part_detail->order_id;
+                    $car_part_detail_arr['car_part_name'] = $car_part_detail->car_part_name;
+                    $car_part_detail_arr['car_part_detail'] = $car_part_detail->car_part_detail;
+                    $car_part_detail_arr['car_part_image'] = $car_part_detail->car_part_image;
+                    $car_part_details_arr[] = $car_part_detail_arr;
+                }
+                $order_data->car_part_details = json_encode($car_part_details_arr);
+            }
             $data['order_data'] = $order_data;
             $cars = Cars::All();
             $carmodels = CarModels::All();
