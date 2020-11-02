@@ -200,4 +200,19 @@ class OrderController extends Controller
         $orderQuery->orderBy('orders.created_at', 'DESC');
         return datatables()->of($orderQuery)->toJson();
     }
+
+    public function orderDelete(Request $request)
+    {
+        $order = Orders::find($request->delete_order_id);
+        $order_car_part_details = OrdersCarPartsDetails::where('order_id',$request->delete_order_id)->get();
+        if(!empty($order_car_part_details)){
+            foreach ($order_car_part_details as $order_car_part_detail){
+//                @unlink(public_path('uploads/car_part_image/'.$order_car_part_detail->car_part_image));
+                $order_car_part_detail->delete();
+            }
+        }
+        $order->delete();
+        \Session::flash('danger', 'Order Successfully Deleted.');
+        return redirect()->back();
+    }
 }

@@ -59,5 +59,6 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
     Route::resource('order', 'OrderController');
     Route::post('/save_order', 'OrderController@store');
     Route::get('/getOrdersDatatable', 'OrderController@getOrdersDatatable');
+    Route::post('/orderDelete','OrderController@orderDelete');
     
 });

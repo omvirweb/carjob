@@ -44,6 +44,29 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="modal fade" id="deleteOrderModel" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Confirmation</h4>
+                    </div>
+                    <form action="{{url('admin/orderDelete')}}" method="post" id="dform">
+                        <div class="modal-body">
+                            <p>Are you sure you want remove this Order?</p>
+                            @csrf
+                            <input type="hidden" name="delete_order_id" id="delete_order_id">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Yes</button>
+                            <button type="button" class="btn btn-default btn-outline" data-dismiss="modal">No</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
     </div>
 </div>
 
@@ -75,7 +98,7 @@
                     "render": function( data, type, full, meta ) {
                         var edit_button = '<a class="btn btn-sm btn-info edit-btn" href="order/' + data + '/edit"><i class="fa far fa-edit"></i></a>';
                         var delete_button = '';
-//                        var delete_button = '<button class="btn btn-sm btn-danger delete_order" title="Delete" onclick="DeleteModal('+ data +')"><span class="fa fa-times-circle"></span></button>';
+                        var delete_button = '<button class="btn btn-sm btn-danger delete_order" title="Delete" onclick="DeleteModal('+ data +')"><span class="fa fa-times-circle"></span></button>';
                         return edit_button + ' ' + delete_button;
                     }
                 },{
@@ -133,5 +156,10 @@
 //            ordersTable.columns( [9] ).visible( false );
 
         });
+
+        function DeleteModal(delete_order_id) {
+            $('#delete_order_id').val(delete_order_id);
+            $('#deleteOrderModel').modal('show');
+        }
     </script>
 @stop
