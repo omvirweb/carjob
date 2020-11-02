@@ -70,15 +70,31 @@ class OrderController extends Controller
         if($order->id){
             if(!empty($request->car_part_details)){
                 $car_part_details = json_decode($request->car_part_details);
+//                print_r($car_part_details); exit;
                 foreach($car_part_details as $car_part_detail){
                     if(!empty($car_part_detail->car_part_detail_id)){
                         $orders_car_parts_details = OrdersCarPartsDetails::where('id', $car_part_detail->car_part_detail_id)->first();
+                        $car_part_image = $orders_car_parts_details->car_part_image;
                     } else {
                         $orders_car_parts_details = new OrdersCarPartsDetails();
+                        $car_part_image = NULL;
                     }
+
+                    if (isset($car_part_detail->car_part_clicked) && $car_part_detail->car_part_clicked == '1' && $request->file('car_part_image') != '') {
+                        // Create car_part_image Folder
+                        $car_part_image_path = public_path('uploads/car_part_image/');
+                        if(!File::isDirectory($car_part_image_path)){
+                            File::makeDirectory($car_part_image_path, 0777, true, true);
+                        }
+//                        @unlink(public_path('uploads/car_part_image/'.$orders_car_parts_details->car_part_image));
+                        $car_part_image = time() . '_' . uniqid() . '.' . $request->file('car_part_image')->getClientOriginalExtension();
+                        $request->file('car_part_image')->move(public_path('uploads/car_part_image/'), $car_part_image);
+                    }
+
                     $orders_car_parts_details->order_id = $order->id;
                     $orders_car_parts_details->car_part_name = $car_part_detail->car_part_name;
                     $orders_car_parts_details->car_part_detail = $car_part_detail->car_part_detail;
+                    $orders_car_parts_details->car_part_image = $car_part_image;
                     $orders_car_parts_details->save();
                 }
                 
@@ -92,6 +108,7 @@ class OrderController extends Controller
                         $car_part_detail_arr['car_part_name'] = $car_part_detail->car_part_name;
                         $car_part_detail_arr['car_part_detail'] = $car_part_detail->car_part_detail;
                         $car_part_detail_arr['car_part_image'] = $car_part_detail->car_part_image;
+                        $car_part_detail_arr['car_part_clicked'] = '0';
                         $car_part_details_arr[] = $car_part_detail_arr;
                     }
                     $return['car_part_details'] = json_encode($car_part_details_arr);
@@ -136,6 +153,7 @@ class OrderController extends Controller
                     $car_part_detail_arr['car_part_name'] = $car_part_detail->car_part_name;
                     $car_part_detail_arr['car_part_detail'] = $car_part_detail->car_part_detail;
                     $car_part_detail_arr['car_part_image'] = $car_part_detail->car_part_image;
+                    $car_part_detail_arr['car_part_clicked'] = '0';
                     $car_part_details_arr[] = $car_part_detail_arr;
                 }
                 $order_data->car_part_details = json_encode($car_part_details_arr);

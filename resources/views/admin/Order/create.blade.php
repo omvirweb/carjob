@@ -357,7 +357,8 @@
                 </div>
                 <div class="form-group">
                     {{ Form::label('car_part_image', 'Upload Part Image', ['class' => 'control-label']) }}
-                    {{ Form::file('car_part_image', []) }}
+                    <input type="file" name="car_part_image" id="car_part_image" >
+                    <img id="car_part_image_tag" atr="car_part_image_tag" title="car_part_image_tag" style="width:100px; height:100px;">
                 </div>
             </div>
 
@@ -404,6 +405,7 @@
             });
             
             $('img[usemap]').rwdImageMaps();
+            $('#car_part_image_tag').hide();
             $(document).on('click', 'area', function () {
                 console.log(car_part_details);
                 $('#AddPartTextModal').modal('show');
@@ -412,10 +414,16 @@
                 var get_car_part_details = getObjects(car_part_details, 'car_part_name', car_part_name);
                 if($.isEmptyObject(get_car_part_details)){
                     $('#car_part_name').val(car_part_name);
+                    $('#car_part_image_tag').hide();
                 } else {
                     $('#car_part_detail_id').val(car_part_details[car_part_name].car_part_detail_id);
                     $('#car_part_name').val(car_part_details[car_part_name].car_part_name);
                     $('#car_part_detail').val(car_part_details[car_part_name].car_part_detail);
+                    if(car_part_details[car_part_name].car_part_image != null){
+                        $('#car_part_image_tag').show();
+                        $('#car_part_image_tag').attr('src', '{{ url("/uploads/car_part_image/") }}/' + car_part_details[car_part_name].car_part_image);
+                        console.log('{{ url("/uploads/car_part_image/") }}/' + car_part_details[car_part_name].car_part_image);
+                    }
                 }
             });
 
@@ -428,6 +436,7 @@
                 $('#car_part_name').val('');
                 $('#car_part_detail').val('');
                 $('#car_part_image').val('');
+                $('#car_part_image_tag').hide();
             });
             $(document).on('click', '#add_car_part_details', function () {
                 new_details = {};
@@ -435,6 +444,8 @@
                 var car_part_name = $('#car_part_name').val();
                 new_details['car_part_name'] = $('#car_part_name').val();
                 new_details['car_part_detail'] = $('#car_part_detail').val();
+                new_details['car_part_image'] = $('#car_part_image').val();
+                new_details['car_part_clicked'] = '1';
                 car_part_details[car_part_name] = new_details;
                 console.log(car_part_details);
                 $('#AddPartTextModal').modal('hide');
@@ -459,6 +470,7 @@
                 var car_part_details_stringify = JSON.stringify(car_part_details);
 //                console.log(car_part_details_stringify); return false;
                 postData.append('car_part_details', car_part_details_stringify);
+                postData.append('car_part_image', $('input[type=file]')[0].files[0]);
                 $('.module_save_btn').attr('disabled', 'disabled');
                 $.ajax({
                     url: "{{ URL::to('/admin/save_order') }}",
