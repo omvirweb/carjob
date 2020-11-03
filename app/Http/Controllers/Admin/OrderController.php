@@ -9,6 +9,8 @@ use App\Models\Cars;
 use App\Models\CarModels;
 use App\Models\User;
 use App\Models\OrdersCarPartsDetails;
+use App\Models\Tasks;
+use App\Models\OrdersTasks;
 use Auth;
 use File;
 use URL;
@@ -38,7 +40,8 @@ class OrderController extends Controller
         $cars = Cars::All();
         $carmodels = CarModels::All();
         $users = User::All();
-        return view('admin.Order.create', $data, compact('cars', 'carmodels', 'users'));
+        $tasks = Tasks::All();
+        return view('admin.Order.create', $data, compact('cars', 'carmodels', 'users', 'tasks'));
     }
     
     /**
@@ -114,6 +117,18 @@ class OrderController extends Controller
                     $return['car_part_details'] = json_encode($car_part_details_arr);
                 }
             }
+            OrdersTasks::where('order_id', $order->id)->delete();
+            if(!empty($request->checked_tasks)){
+                $checked_tasks = $request->checked_tasks;
+//                print_r($checked_tasks); exit;
+                foreach($checked_tasks as $checked_task){
+                    $orders_tasks = new OrdersTasks();
+                    $orders_tasks->order_id = $order->id;
+                    $orders_tasks->task_id = $checked_task;
+                    $orders_tasks->task_value = '1';
+                    $orders_tasks->save();
+                }
+            }
 
     //        Session::flash('status', 'success');
     //        Session::flash('message', 'Order Successfully Created');
@@ -158,11 +173,20 @@ class OrderController extends Controller
                 }
                 $order_data->car_part_details = json_encode($car_part_details_arr);
             }
+            $checked_tasks = OrdersTasks::where('order_id', $order_data->id)->get();
+            if(!empty($checked_tasks)){
+                $checked_tasks_arr = Array();
+                foreach($checked_tasks as $checked_task){
+                    $checked_tasks_arr[] = $checked_task->task_id;
+                }
+                $order_data->checked_tasks = $checked_tasks_arr;
+            }
             $data['order_data'] = $order_data;
             $cars = Cars::All();
             $carmodels = CarModels::All();
             $users = User::All();
-            return view('admin.Order.create', $data, compact('cars', 'carmodels', 'users'));
+            $tasks = Tasks::All();
+            return view('admin.Order.create', $data, compact('cars', 'carmodels', 'users', 'tasks'));
         } else {
             return redirect('admin_404')->with(['status' => 'warning', 'message' => ' User not found !!!']);
         }
@@ -211,6 +235,7 @@ class OrderController extends Controller
                 $order_car_part_detail->delete();
             }
         }
+        OrdersTasks::where('order_id', $request->delete_order_id)->delete();
         $order->delete();
         \Session::flash('danger', 'Order Successfully Deleted.');
         return redirect()->back();

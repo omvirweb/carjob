@@ -137,203 +137,52 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                {{ Form::label('', 'Tasks : ', ['class' => 'control-label']) }}
+            </div>
+            @forelse($tasks as $task_key => $task_value)
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <?php
+                            $checkbox_value = '';
+                            if(isset($order_data->checked_tasks) && in_array($task_value->id, $order_data->checked_tasks)) {
+                                $checkbox_value = '[checked]';
+                            }
+                        ?>
+                        {{ Form::checkbox('checked_tasks[]', $task_value->id, $checkbox_value, ['id' => 'task_id_' . $task_value->id]) }}
+                        {{ Form::label('task_id_' . $task_value->id, $task_value->task_name, ['class' => 'control-label']) }}
+                    </div>
+                </div>
+            @empty
+            @endforelse
+        </div>
+        <hr>
         <div class="form-group">
-            {{ Form::label('car_parts', 'Add Car Parts Details', ['class' => 'control-label']) }} <br>
+            {{ Form::label('car_parts', 'Add Car Parts Details : ', ['class' => 'control-label']) }} <br>
             <div class="car_image_div">
-                <img src="{{asset('images/car-tap-4.jpg')}}" id="img_1" style="height:400px;" usemap="#car_job_parts" alt="" />
+                <img src="{{asset('images/car-tap-useme.png')}}" id="img_1" style="height:400px;" usemap="#car_job_parts" alt="" />
                 <map name="car_job_parts">
-                    <area alt="Left First Wheel" title="Left First Wheel" href="#LeftFirstWheel" coords="45,206,38" shape="circle">
-                    <area alt="Car Bonate" title="Car Bonate" href="#CarBonate" coords="165,132,161,168,158,207,157,231,155,249,168,241,181,236,193,230,206,228,220,226,238,225,252,225,267,226,279,226,292,227,301,228,313,229,323,232,335,237,347,241,362,246,367,251,368,243,367,231,366,219,366,206,366,193,366,180,364,163,363,153,363,142,359,128,340,121,319,119,293,115,268,115,242,117,224,116,204,117,191,120,179,124" shape="poly">
-                    <area alt="Right First Wheel" title="Right First Wheel" href="#RightFirstWheel" coords="479,206,38" shape="circle">
+                    <area alt="Front Bumper" title="Front Bumper" href="#frontbumper" coords="14,134,15,134,24,176,41,176,76,172,114,177,176,178,241,178,248,140,248,140,189,146,14,143,1,167,10,137" shape="poly">
+                    <area alt="Rear Bumper" title="rear Bumper" href="#rearbumper" coords="16,367,19,394,33,411,84,405,151,405,187,405,235,414,247,367,227,366,183,364,221,366,230,367,223,363,227,366" shape="poly">
+                    <area alt="Front Right Fender" title="Front Right Fender" href="#frontrightfender" coords="802,398,45" shape="circle">
+                    <area alt="Front Left Fender" title="Front Left Fender" href="#frontleftfender" coords="430,155,45" shape="circle">
+                    <area alt="Driver Door" title="Driver Door" href="#driverdoor" coords="584,311,589,395,740,396,731,315" shape="poly">
+                    <area alt="Rear Left Door" title="Rear Left Door" href="#rearleftdoor" coords="644,69,639,150,734,152,767,101,759,65" shape="poly">
+                    <area alt="Passenger Door" title="Passenger Door" href="#passengerdoor" coords="496,76,495,155,638,151,642,71" shape="poly">
+                    <area alt="Rear Right Door" title="Rear Right Door" href="#rearrightdoor" coords="470,307,460,344,495,394,588,396,582,312" shape="poly">
+                    <area alt="Rear Left Fender" title="Rear Left fender" href="#rearleftfender" coords="792,155,45" shape="circle">
+                    <area alt="Rear Right Fender" title="Rear Right fender" href="#rearrightfender" coords="439,398,47" shape="circle">
+                    <area alt="Trunk" title="Trunk" href="#trunk" coords="27,313,16,360,64,357,195,359,247,363,242,310" shape="poly">
+                    <area alt="Hood" title="Hood" href="#hood" coords="31,74,14,118,81,122,175,124,219,122,246,122,236,75" shape="poly">
+                    <area alt="Roof" title="Roof" href="#roof" coords="430,548,417,600,418,650,431,699,503,692,557,691,605,693,616,638,614,582,606,555" shape="poly">
                 </map>
             </div>
         </div>
         {{ Form::submit('Save', ['class' => 'btn btn-primary module_save_btn']) }}
-        
+        {{ Form::submit('Save & Print', ['class' => 'btn btn-primary module_save_btn']) }}
         {{ Form::close() }}
-        <br><hr>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'wheels off service', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'wheel polishing', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'interior trim polishing', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'multi stage paint correction', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'single step polish', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'leather coating', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', '1 year ceramic coating', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'light interior cleaning', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'medium duty interior', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', '2 year ceramic coating', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'headlight restoration', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'engine bay detailing', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', '3 year ceramic coating', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'windshield protection film', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'high IR rejection window tinting', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'fabric coating', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'paintless dent removal', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'cement & tar removal', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'heavy duty interior cleaning', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'paint protection film', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'ppf front quarter', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'windshield coating', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'ppf full body', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'ppf for headlights only', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'touch up paint', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'nano ceramic visit 2', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'orange peel removal', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'window tint removal', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '') }}
-                    {{ Form::label('', 'ppf full front', ['class' => 'control-label']) }}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{ Form::checkbox('', '1', $order_data->item_available ?? '[checked]') }}
-                    {{ Form::label('', 'nano ceramic maintenance visit 1', ['class' => 'control-label']) }}
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
