@@ -31,30 +31,15 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
     # Dashboard / Index
     Route::get('/dashboard', 'AdminController@showHome')->name('dashboard');
 
-    # Category
-    Route::get('/categoryList','CategoryController@categoryList')->name('categoryList');
-    Route::post('/categoryInsert','CategoryController@categoryInsert')->name('categoryInsert');
-    Route::post('/getCategory','CategoryController@getCategory')->name('getCategory');
-    Route::post('/categoryUpdate','CategoryController@categoryUpdate')->name('categoryUpdate');
-    Route::post('/categoryDelete','CategoryController@categoryDelete')->name('categoryDelete');
+    # Cars
+    Route::resource('cars', 'CarsController');
 
-    # Item
-    Route::get('/itemList','ItemController@itemList')->name('itemList');
-    Route::post('/itemInsert','ItemController@itemInsert')->name('itemInsert');
-    Route::post('/getItem','ItemController@getItem')->name('getItem');
-    Route::post('/itemUpdate','ItemController@itemUpdate')->name('itemUpdate');
-    Route::post('/itemDelete','ItemController@itemDelete')->name('itemDelete');
+    # Models
+    Route::resource('car-models', 'CarModelsController');
 
-    # Distributor
-    Route::get('/distributorList','DistributorController@distributorList')->name('distributorList');
-    Route::post('/distributorInsert','DistributorController@distributorInsert')->name('distributorInsert');
-    Route::post('/getDistributor','DistributorController@getDistributor')->name('getDistributor');
-    Route::post('/distributorUpdate','DistributorController@distributorUpdate')->name('distributorUpdate');
-    Route::post('/distributorDelete','DistributorController@distributorDelete')->name('distributorDelete');
+    # Models
+    Route::resource('tasks', 'TasksController');
 
-    # Item Details
-    Route::resource('item-details', 'ItemDetailsController');
-    
     # Order
     Route::resource('order', 'OrderController');
     Route::post('/save_order', 'OrderController@store');

@@ -213,16 +213,21 @@ return [
 //            'search' => true,
 //            'topnav' => true,
 //        ],
-//        [
-//            'text'        => 'categories',
-//            'url'         => 'admin/categoryList',
-//            'icon'        => 'far fa-fw fa-list-alt',
-//        ],
-//        [
-//            'text'        => 'items',
-//            'url'         => 'admin/itemList',
-//            'icon'        => 'far fa-fw fa-object-group',
-//        ],
+        [
+            'text'        => 'Cars',
+            'url'         => 'admin/cars',
+            'icon'        => 'far fa-fw fa-list-alt',
+        ],
+        [
+            'text'        => 'Car Models',
+            'url'         => 'admin/car-models',
+            'icon'        => 'far fa-fw fa-list-alt',
+        ],
+        [
+            'text'        => 'Tasks',
+            'url'         => 'admin/tasks',
+            'icon'        => 'far fa-fw fa-list-alt',
+        ],
         [
             'text'        => 'Orders',
             'url'         => '#',
