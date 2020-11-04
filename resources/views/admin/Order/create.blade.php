@@ -11,6 +11,7 @@
 @section('css')
     <link rel="stylesheet" href="{{asset('vendor/datepicker/datepicker3.css') }}">
     <link rel="stylesheet" href="{{asset('vendor/parsleyjs/src/parsley.css') }}">
+    <link rel="stylesheet" href="{{asset('vendor/select2/css/select2.min.css') }}">
     <style>
         .car_image_div {
             width: 100%;
@@ -25,7 +26,10 @@
         input[type=checkbox]{
             height:22px;
             width:22px;
-        } 
+        }
+        .select2-selection{
+            height: 38px !important;
+        }
     </style>
 @stop
 
@@ -89,13 +93,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     {{ Form::label('car_model_id', 'Model', ['class' => 'control-label']) }} <span class="text-danger">*</span>
-                    <select class="form-control" id="car_model_id" name="car_model_id" required="required">
-                        <option value=""> - Select Car Model - </option>
-                        @forelse($carmodels as $car_model_key => $car_model_value)
-                            <option value="<?php echo $car_model_value['id']; ?>" <?php echo (isset($order_data->car_model_id) && $order_data->car_model_id == $car_model_value['id']) ? 'Selected' : ''; ?> ><?php echo $car_model_value['model_name']; ?></option>
-                        @empty
-                        @endforelse
-                    </select>
+                    <select class="form-control" id="car_model_id" name="car_model_id" required="required"></select>
                 </div>
             </div>
             <div class="col-md-3">
@@ -227,6 +225,7 @@
     <script src="{{asset('js/jquery.rwdImageMaps.min.js') }}"></script>
     <script src="{{asset('vendor/bootbox/bootbox.min.js') }}"></script>
     <script src="{{asset('vendor/parsleyjs/dist/parsley.js') }}"></script>
+    <script src="{{asset('vendor/select2/js/select2.min.js') }}"></script>
     <script>
         var car_part_details = {};
         <?php if (isset($order_data->car_part_details)) { ?>
@@ -252,7 +251,56 @@
                     $(this).val('');
                 }
             });
-            
+
+            $(document).on('change', "#car_id", function () {
+                $('#car_model_id').val(null).trigger('change');
+                var car_id = $('#car_id').val();
+                $('#car_model_id').select2({
+                    placeholder: "Choose Car Model...",
+//                        minimumInputLength: 2,
+//                        tags: true,
+//                        multiple: true,
+//                        maximumSelectionLength: 1,
+                    ajax: {
+                        url: "{{ URL::to('/admin/getModelsByCar/') }}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                car_id: car_id,
+                                q: $.trim(params.term)
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            });
+            <?php if(isset($order_data->car_model_id) && !empty($order_data->car_model_id)){ ?>
+                $('#car_id').change();
+                var car_model_id = '{{ $order_data->car_model_id }}';
+                $.ajax({
+                    url: "{{ URL::to('/admin/setCarModel/') }}/" + car_model_id,
+                    type: "GET",
+                    data: null,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        var selectValues = data;
+                        $.each(selectValues, function(key, value) {
+                            $('#car_model_id').select2("trigger", "select", {
+                                data: value
+                            });
+                        });
+                    }
+                });
+            <?php } ?>
+
             $('img[usemap]').rwdImageMaps();
             $('#car_part_image_tag').hide();
             $(document).on('click', 'area', function () {

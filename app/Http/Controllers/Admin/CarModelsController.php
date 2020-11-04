@@ -83,4 +83,32 @@ class CarModelsController extends Controller
     {
         //
     }
+
+    public function getModelsByCar(Request $request) {
+        $car_id = $request->car_id;
+        $q = trim($request->q);
+        if (empty($car_id)) {
+            return \Response::json([]);
+        }
+        $car_models = CarModels::where('car_id', $car_id)->where('model_name', 'LIKE', "%$q%")->limit(5)->get();
+        $formatted_car_models = [];
+        foreach ($car_models as $car_model) {
+            $formatted_car_models[] = ['id' => $car_model->id, 'text' => $car_model->model_name];
+        }
+        return \Response::json($formatted_car_models);
+    }
+
+    public function setCarModel($car_model_id) {
+        $formatted_puritys = [];
+        if(!empty($car_model_id)){
+            if(!empty($car_model_id)){
+                $car_models = CarModels::select('*')->where('id', $car_model_id)->get();
+                foreach ($car_models as $car_model) {
+                    $formatted_puritys[] = ['id' => $car_model->id, 'text' => $car_model->model_name];
+                }
+            }
+        }
+        return \Response::json($formatted_puritys);
+    }
+
 }
