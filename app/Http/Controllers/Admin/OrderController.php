@@ -38,10 +38,9 @@ class OrderController extends Controller
     public function create(){
         $data = array();
         $cars = Cars::All();
-        $carmodels = CarModels::All();
         $users = User::All();
         $tasks = Tasks::All();
-        return view('admin.Order.create', $data, compact('cars', 'carmodels', 'users', 'tasks'));
+        return view('admin.Order.create', $data, compact('cars', 'users', 'tasks'));
     }
     
     /**
@@ -183,10 +182,9 @@ class OrderController extends Controller
             }
             $data['order_data'] = $order_data;
             $cars = Cars::All();
-            $carmodels = CarModels::All();
             $users = User::All();
             $tasks = Tasks::All();
-            return view('admin.Order.create', $data, compact('cars', 'carmodels', 'users', 'tasks'));
+            return view('admin.Order.create', $data, compact('cars', 'users', 'tasks'));
         } else {
             return redirect('admin_404')->with(['status' => 'warning', 'message' => ' User not found !!!']);
         }

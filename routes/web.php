@@ -34,10 +34,12 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
     # Cars
     Route::resource('cars', 'CarsController');
 
-    # Models
+    # Car Models
     Route::resource('car-models', 'CarModelsController');
+    Route::get('/getModelsByCar/', 'CarModelsController@getModelsByCar');
+    Route::get('/setCarModel/{model}', 'CarModelsController@setCarModel');
 
-    # Models
+    # Tasks
     Route::resource('tasks', 'TasksController');
 
     # Order
