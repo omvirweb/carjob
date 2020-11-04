@@ -16,6 +16,7 @@ class TasksController extends Controller
     public function index()
     {
         //
+        return view('admin/tasks');
     }
 
     /**
@@ -23,9 +24,13 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $req)
     {
         //
+        $task = new Tasks;
+        $task->task_name=$req->task_name;
+        $task->save();
+        return redirect('admin/tasks');
     }
 
     /**
@@ -37,6 +42,8 @@ class TasksController extends Controller
     public function store(Request $request)
     {
         //
+        $tasks = Tasks::all();
+        return view('admin/tasks', ["tasks"=>$tasks]); 
     }
 
     /**

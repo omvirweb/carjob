@@ -38,7 +38,10 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
     Route::resource('car-models', 'CarModelsController');
 
     # Models
-    Route::resource('tasks', 'TasksController');
+    //Route::resource('tasks', 'TasksController');
+    Route::get('tasks','TasksController@index');
+    Route::post('tasks','TasksController@create');
+    Route::get('tasks','TasksController@store');
 
     # Order
     Route::resource('order', 'OrderController');
