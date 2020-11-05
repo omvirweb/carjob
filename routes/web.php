@@ -39,21 +39,17 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
     Route::get('/getModelsByCar/', 'CarModelsController@getModelsByCar');
     Route::get('/setCarModel/{model}', 'CarModelsController@setCarModel');
 
-<<<<<<< HEAD
-    # Models
+    # Tasks
     //Route::resource('tasks', 'TasksController');
     Route::get('tasks','TasksController@index');
     Route::post('tasks','TasksController@create');
     Route::get('tasks','TasksController@store');
-=======
-    # Tasks
-    Route::resource('tasks', 'TasksController');
->>>>>>> 0d817991c3ef78a027d6a09e316cd2e47186a521
 
     # Order
     Route::resource('order', 'OrderController');
     Route::post('/save_order', 'OrderController@store');
     Route::get('/getOrdersDatatable', 'OrderController@getOrdersDatatable');
     Route::post('/orderDelete','OrderController@orderDelete');
+    Route::get('/orderPrint/{order_id}','OrderController@orderPrint');
     
 });

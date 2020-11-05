@@ -16,6 +16,7 @@ use File;
 use URL;
 use Session;
 use DB;
+use PDF;
 
 class OrderController extends Controller
 {
@@ -237,5 +238,29 @@ class OrderController extends Controller
         $order->delete();
         \Session::flash('danger', 'Order Successfully Deleted.');
         return redirect()->back();
+    }
+
+    public function orderPrint(Request $request)
+    {
+        $data = array();
+        $order_data = Orders::select(DB::raw('orders.*, users.first_name, cars.car_name, car_models.model_name'))
+                ->leftJoin('users', 'users.id', '=', 'orders.receiver_id')
+                ->leftJoin('cars', 'cars.id', '=', 'orders.car_id')
+                ->leftJoin('car_models', 'car_models.id', '=', 'orders.car_model_id')
+                ->where('orders.id', $request->order_id)
+                ->get();
+        $data['order_data'] = $order_data[0];
+        $data['tasks'] = Tasks::All();
+        $checked_tasks = OrdersTasks::where('order_id', $request->order_id)->get();
+        if(!empty($checked_tasks)){
+            $checked_tasks_arr = Array();
+            foreach($checked_tasks as $checked_task){
+                $checked_tasks_arr[] = $checked_task->task_id;
+            }
+            $data['checked_tasks'] = $checked_tasks_arr;
+        }
+//        return view('admin.Order.print', $data);
+        $pdf = PDF::loadView('admin.Order.print', $data);
+        return $pdf->stream('orderPrint.pdf');
     }
 }

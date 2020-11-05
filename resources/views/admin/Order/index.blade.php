@@ -99,7 +99,8 @@
                         var edit_button = '<a class="btn btn-sm btn-info edit-btn" href="order/' + data + '/edit"><i class="fa far fa-edit"></i></a>';
                         var delete_button = '';
                         var delete_button = '<button class="btn btn-sm btn-danger delete_order" title="Delete" onclick="DeleteModal('+ data +')"><span class="fa fa-times-circle"></span></button>';
-                        return edit_button + ' ' + delete_button;
+                        var print_button = '<a class="btn btn-sm btn-info edit-btn" href="orderPrint/' + data + '" target="_blank"><i class="fa far fa-print"></i></a>';
+                        return edit_button + ' ' + delete_button + ' ' + print_button;
                     }
                 },{
                     "data": "id",
