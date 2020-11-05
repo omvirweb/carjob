@@ -43,7 +43,8 @@
 
     </head>
     <body>
-        <div class="header">
+        <div class="header" style="text-align: center;">
+            <img src="{{asset('images/logo.png')}}" style="height:90px;" alt="Logo" title="Logo" />
             <h3 style="text-align: center;">Company Name</h3>
             <h5 style="text-align: center;">Company Address</h5>
         </div>
