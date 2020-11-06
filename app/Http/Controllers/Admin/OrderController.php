@@ -259,6 +259,7 @@ class OrderController extends Controller
             }
             $data['checked_tasks'] = $checked_tasks_arr;
         }
+        $data['userDetails'] = User::find(\Auth::user()->id);
 //        return view('admin.Order.print', $data);
         $pdf = PDF::loadView('admin.Order.print', $data);
         return $pdf->stream('orderPrint.pdf');

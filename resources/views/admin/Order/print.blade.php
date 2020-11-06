@@ -44,9 +44,9 @@
     </head>
     <body>
         <div class="header" style="text-align: center;">
-            <img src="{{asset('images/logo.png')}}" style="height:90px;" alt="Logo" title="Logo" />
-            <h3 style="text-align: center;">Company Name</h3>
-            <h5 style="text-align: center;">Company Address</h5>
+            <img src="{{asset('uploads/company_logo/' . $userDetails->city)}}" style="height:90px;" alt="Logo" title="Logo" />
+            <h3 style="text-align: center;">{{ $userDetails->first_name }}</h3>
+            <h5 style="text-align: center;">Address : {{ $userDetails->address }}</h5>
         </div>
         <div class="main">
             <table border="1">
