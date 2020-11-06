@@ -28,7 +28,8 @@ class OrderController extends Controller
     public function index()
     {
         $data = array();
-        return view('admin.Order.index', $data);
+        $cars = Cars::All();
+        return view('admin.Order.index', $data, compact('cars'));
     }
     
     /**
@@ -219,7 +220,20 @@ class OrderController extends Controller
 //                    return $orderQuery;
 //                });
 //            });
-
+        if (isset($data['car_id']) && trim($data['car_id'])) {
+            $orderQuery->whereRaw('orders.car_id="' . $data['car_id'] . '"');
+        }
+        if (isset($data['mobile_no']) && trim($data['mobile_no'])) {
+            $orderQuery->whereRaw('orders.mobile_no Like"%' . $data['mobile_no'] . '%"');
+        }
+        if (isset($data['from_date']) && trim($data['from_date'])) {
+            $data['from_date'] = $data['from_date'];
+            $orderQuery->whereRaw('orders.order_date>="' . date('Y-m-d', strtotime($data['from_date'])) . '"');
+        }
+        if (isset($data['to_date']) && trim($data['to_date'])) {
+            $data['to_date'] = $data['to_date'];
+            $orderQuery->whereRaw('orders.order_date<="' . date('Y-m-d', strtotime($data['to_date'])) . '"');
+        }
         $orderQuery->orderBy('orders.created_at', 'DESC');
         return datatables()->of($orderQuery)->toJson();
     }

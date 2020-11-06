@@ -10,6 +10,7 @@
 
 @section('css')
 <link rel="stylesheet" href="{{asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}">
+<link rel="stylesheet" href="{{asset('vendor/datepicker/datepicker3.css') }}">
 @stop
 
 
@@ -19,6 +20,45 @@
         @if (Session::get('status') && Session::has('message'))
             <div class="text-{{ Session::get('status') }}">{{ Session::get('message') }}</div>
         @endif
+
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    {{ Form::label('car_id', 'Car', ['class' => 'control-label']) }}
+                    <select class="form-control" id="car_id" name="car_id" required="required">
+                        <option value=""> All </option>
+                        @forelse($cars as $car_key => $car_value)
+                            <option value="<?php echo $car_value['id']; ?>"><?php echo $car_value['car_name']; ?></option>
+                        @empty
+                        @endforelse
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    {{ Form::label('mobile_no', 'Mobile', ['class' => 'control-label']) }}
+                    <input type="text" id="mobile_no" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    {{ Form::label('from_date', 'From Date', ['class' => 'control-label']) }}
+                    <input type="text" id="from_date" class="form-control datepicker" value="<?php echo date("d-m-Y", strtotime("first day of this month")); ?>">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    {{ Form::label('to_date', 'To Date', ['class' => 'control-label']) }}
+                    <input type="text" id="to_date" class="form-control datepicker" value="<?php echo date('d-m-Y'); ?>">
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <input type="button" id="search_btn" class="btn btn-primary search_btn" value="Search">
+                </div>
+            </div>
+        </div>
 
         <div class="table-responsive">
             <table id="dataTable-orders" class="table table-bordered">
@@ -75,11 +115,18 @@
 @section('js')
     <script src="{{asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{asset('vendor/datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="{{asset('vendor/bootbox/bootbox.min.js') }}"></script>
     <script src="{{asset('js/comman.js') }}"></script>
     <script>
         var ordersTable;
         $(document).ready( function(){
+            $('.datepicker').datepicker({
+                format: 'dd-mm-yyyy',
+                todayBtn: "linked",
+                autoclose: true
+            });
+
             ordersTable = $('#dataTable-orders').DataTable({
                 "bServerSide": true,
                 "processing": true,
@@ -89,7 +136,10 @@
                     "url": "{{ URL::to('/admin/getOrdersDatatable/') }}",
                     "type": "GET",
                     "data": function (d) {
-//                        d.user_id = $('#user_id').val();
+                        d.car_id = $('#car_id').val();
+                        d.mobile_no = $('#mobile_no').val();
+                        d.from_date = $('#from_date').val();
+                        d.to_date = $('#to_date').val();
                     },
                 },
                 "columns": [{
@@ -156,6 +206,9 @@
 
 //            ordersTable.columns( [9] ).visible( false );
 
+            $(document).on('click', '#search_btn', function(){
+                ordersTable.draw();
+            });
         });
 
         function DeleteModal(delete_order_id) {
