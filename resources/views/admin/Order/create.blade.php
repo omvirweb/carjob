@@ -163,7 +163,7 @@
                 <img src="{{asset('images/car-tap-useme.png')}}" id="img_1" style="height:400px;" usemap="#car_job_parts" alt="" />
                 <map name="car_job_parts">
                     <area alt="Front Bumper" title="Front Bumper" href="#frontbumper" coords="14,134,15,134,24,176,41,176,76,172,114,177,176,178,241,178,248,140,248,140,189,146,14,143,1,167,10,137" shape="poly">
-                    <area alt="Rear Bumper" title="rear Bumper" href="#rearbumper" coords="16,367,19,394,33,411,84,405,151,405,187,405,235,414,247,367,227,366,183,364,221,366,230,367,223,363,227,366" shape="poly">
+                    <area alt="Rear Bumper" title="Rear Bumper" href="#rearbumper" coords="16,367,19,394,33,411,84,405,151,405,187,405,235,414,247,367,227,366,183,364,221,366,230,367,223,363,227,366" shape="poly">
                     <area alt="Front Right Fender" title="Front Right Fender" href="#frontrightfender" coords="802,398,45" shape="circle">
                     <area alt="Front Left Fender" title="Front Left Fender" href="#frontleftfender" coords="430,155,45" shape="circle">
                     <area alt="Driver Door" title="Driver Door" href="#driverdoor" coords="584,311,589,395,740,396,731,315" shape="poly">

@@ -250,6 +250,22 @@ class OrderController extends Controller
                 ->where('orders.id', $request->order_id)
                 ->get();
         $data['order_data'] = $order_data[0];
+        $data['car_parts'] = Array(
+            '#frontbumper' => 'Front Bumper',
+            '#rearbumper' => 'Rear Bumper',
+            '#frontrightfender' => 'Front Right Fender',
+            '#frontleftfender' => 'Front Left Fender',
+            '#driverdoor' => 'Driver Door',
+            '#rearleftdoor' => 'Rear Left Door',
+            '#passengerdoor' => 'Passenger Door',
+            '#rearrightdoor' => 'Rear Right Door',
+            '#rearleftfender' => 'Rear Left Fender',
+            '#rearrightfender' => 'Rear Right Fender',
+            '#trunk' => 'Trunk',
+            '#hood' => 'Hood',
+            '#roof' => 'Roof',
+        );
+        $data['car_part_details'] = OrdersCarPartsDetails::where('order_id', $request->order_id)->get();
         $data['tasks'] = Tasks::All();
         $checked_tasks = OrdersTasks::where('order_id', $request->order_id)->get();
         if(!empty($checked_tasks)){
