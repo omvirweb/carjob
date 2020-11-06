@@ -36,6 +36,9 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
 
     # Cars
     Route::resource('cars', 'CarsController');
+    Route::post('/save_car', 'CarsController@store');
+    Route::get('/getCarsDatatable', 'CarsController@getCarsDatatable');
+    Route::post('/carDelete','CarsController@carDelete');
 
     # Car Models
     Route::resource('car-models', 'CarModelsController');
