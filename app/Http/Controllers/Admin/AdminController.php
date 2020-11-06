@@ -41,7 +41,7 @@ class AdminController extends Controller
 
     public function profile(Request $request)
     {
-        $userDetails = User::find(\Auth::user()->id);
+        $userDetails = User::find('1');
         return view('admin.profile', compact('userDetails'));
     }
 
@@ -60,34 +60,32 @@ class AdminController extends Controller
             if ($validator->passes()) {
                 if(!empty($request->id)){
                     $user = User::where('id', $request->id)->first();
-                } else {
-                    $user = new Customers();
-                }
-                $user->first_name = $request->first_name;
-                $user->email = $request->email;
-                if(!empty($request->password)){
-                    $user->password = bcrypt($request->password);
-                }
-                $user->address = !empty($request->address) ? $request->address : NULL;
-                if ($request->file('company_logo') != '') {
-                    // Create company_logo Folder
-                    $company_logo_path = public_path('uploads/company_logo/');
-                    if(!File::isDirectory($company_logo_path)){
-                        File::makeDirectory($company_logo_path, 0777, true, true);
+                    $user->first_name = $request->first_name;
+                    $user->email = $request->email;
+                    if(!empty($request->password)){
+                        $user->password = bcrypt($request->password);
                     }
-                    $company_logo = time() . '_' . uniqid() . '.' . $request->file('company_logo')->getClientOriginalExtension();
-                    $request->file('company_logo')->move(public_path('uploads/company_logo/'), $company_logo);
-                    $user->city = $company_logo;
-                }
-                $user->save();
-                if($user->id){
-                    Session::flash('status', 'success');
-                    if(!empty($request->id)){
-                        \Session::flash('success', 'Customer Successfully Updated.');
-                        $return['success'] = 'success';
-                    } else {
-                        \Session::flash('success', 'Customer Successfully Created.');
-                        $return['success'] = 'success';
+                    $user->address = !empty($request->address) ? $request->address : NULL;
+                    if ($request->file('company_logo') != '') {
+                        // Create company_logo Folder
+                        $company_logo_path = public_path('uploads/company_logo/');
+                        if(!File::isDirectory($company_logo_path)){
+                            File::makeDirectory($company_logo_path, 0777, true, true);
+                        }
+                        $company_logo = time() . '_' . uniqid() . '.' . $request->file('company_logo')->getClientOriginalExtension();
+                        $request->file('company_logo')->move(public_path('uploads/company_logo/'), $company_logo);
+                        $user->city = $company_logo;
+                    }
+                    $user->save();
+                    if($user->id){
+                        Session::flash('status', 'success');
+                        if(!empty($request->id)){
+                            \Session::flash('success', 'Customer Successfully Updated.');
+                            $return['success'] = 'success';
+                        } else {
+                            \Session::flash('success', 'Customer Successfully Created.');
+                            $return['success'] = 'success';
+                        }
                     }
                 }
                 print json_encode($return);
