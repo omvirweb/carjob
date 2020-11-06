@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use App\Models\User;
+use Validator;
+use Session;
+use File;
 
 class AdminController extends Controller
 {
@@ -38,30 +41,62 @@ class AdminController extends Controller
 
     public function profile(Request $request)
     {
-        $allCountry = Countries::all();
         $userDetails = User::find(\Auth::user()->id);
-        return view('admin.Users.profile', compact('allCountry', 'userDetails'));
+        return view('admin.profile', compact('userDetails'));
     }
 
     public function updateProfile(Request $request)
     {
 
         try {
-            $users = User::find($request->eid);
-            $users->first_name = $request->firstName;
-            $users->last_name = $request->lastName;
-            $users->phone = $request->phoneNumber;
-            $users->dob = $request->dob;
-            $users->bio = $request->bio;
-            $users->gender = $request->gender;
-            $users->country = $request->countries;
-            $users->state = $request->state;
-            $users->city = $request->city;
-            $users->address = $request->address;
-            $users->postal = $request->postal;
-            $users->save();
-
-            return response()->json(['error' => false, 'message' => trans('users/message.success.update')]);
+            $return = array();
+            $rules = [
+                'first_name' => 'required',
+                'email' => 'required|email|unique:users,email,'.$request->id,
+                'password' => 'min:6|required_with:confirm_password|same:confirm_password',
+                'confirm_password' => 'min:6',
+            ];
+            $validator = Validator::make($_POST, $rules);
+            if ($validator->passes()) {
+                if(!empty($request->id)){
+                    $user = User::where('id', $request->id)->first();
+                } else {
+                    $user = new Customers();
+                }
+                $user->first_name = $request->first_name;
+                $user->email = $request->email;
+                if(!empty($request->password)){
+                    $user->password = bcrypt($request->password);
+                }
+                $user->address = !empty($request->address) ? $request->address : NULL;
+                if ($request->file('company_logo') != '') {
+                    // Create company_logo Folder
+                    $company_logo_path = public_path('uploads/company_logo/');
+                    if(!File::isDirectory($company_logo_path)){
+                        File::makeDirectory($company_logo_path, 0777, true, true);
+                    }
+                    $company_logo = time() . '_' . uniqid() . '.' . $request->file('company_logo')->getClientOriginalExtension();
+                    $request->file('company_logo')->move(public_path('uploads/company_logo/'), $company_logo);
+                    $user->city = $company_logo;
+                }
+                $user->save();
+                if($user->id){
+                    Session::flash('status', 'success');
+                    if(!empty($request->id)){
+                        \Session::flash('success', 'Customer Successfully Updated.');
+                        $return['success'] = 'success';
+                    } else {
+                        \Session::flash('success', 'Customer Successfully Created.');
+                        $return['success'] = 'success';
+                    }
+                }
+                print json_encode($return);
+                exit;
+            } else {
+                $return['errors'] = $validator->errors()->all();
+                print json_encode($return);
+                exit;
+            }
         } catch (UserNotFoundException $e) {
             // Prepare the error message
             return response()->json(['error' => true, 'message' => trans('users/message.user_not_found')]);

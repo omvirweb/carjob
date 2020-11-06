@@ -20,8 +20,8 @@ Route::get('login', 'FrontEndController@getLogin')->name('login');
 Route::post('login', 'FrontEndController@postLogin')->name('login');
 Route::post('logout', 'FrontEndController@getLogout')->name('logout');
 
-Route::get('/home', 'HomeController@index')->name('index');
-Route::get('{id}/product', 'HomeController@product')->name('product');
+//Route::get('/home', 'HomeController@index')->name('index');
+//Route::get('{id}/product', 'HomeController@product')->name('product');
 
 // Route::get('/', ['as' => 'home', function () {
 //     return view('index');
@@ -30,6 +30,9 @@ Route::get('{id}/product', 'HomeController@product')->name('product');
 Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['auth']), function () {
     # Dashboard / Index
     Route::get('/dashboard', 'AdminController@showHome')->name('dashboard');
+
+    Route::get('/profile', 'AdminController@Profile')->name('profile');
+    Route::post('/updateProfile', 'AdminController@updateProfile')->name('updateProfile');
 
     # Cars
     Route::resource('cars', 'CarsController');
