@@ -41,14 +41,14 @@ class CarsController extends Controller
     public function store(Request $request)
     {
         if(!empty($request->id)){
-            $order = Cars::where('id', $request->id)->first();
+            $car = Cars::where('id', $request->id)->first();
         } else {
-            $order = new Cars();
+            $car = new Cars();
         }
-        $order->car_name = !empty($request->car_name) ? $request->car_name : NULL;
-        $order->save();
+        $car->car_name = !empty($request->car_name) ? $request->car_name : NULL;
+        $car->save();
         $return = array();
-        if($order->id){
+        if($car->id){
             if(!empty($request->id)){
                 $return['success'] = "Updated";
             } else {
