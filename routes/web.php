@@ -49,10 +49,10 @@ Route::group(array('prefix' => 'admin', 'namespace'=>'Admin', 'middleware' => ['
     Route::get('/setCarModel/{model}', 'CarModelsController@setCarModel');
 
     # Tasks
-    //Route::resource('tasks', 'TasksController');
-    Route::get('tasks','TasksController@index');
-    Route::post('tasks','TasksController@create');
-    Route::get('tasks','TasksController@store');
+    Route::resource('tasks', 'TasksController');
+    Route::post('/save_task', 'TasksController@store');
+    Route::get('/getTasksDatatable', 'TasksController@getTasksDatatable');
+    Route::post('/taskDelete','TasksController@taskDelete');
 
     # Order
     Route::resource('order', 'OrderController');

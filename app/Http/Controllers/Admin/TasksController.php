@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tasks;
+use App\Models\OrdersTasks;
 use Illuminate\Http\Request;
+use Session;
+use DB;
 
 class TasksController extends Controller
 {
@@ -15,8 +18,8 @@ class TasksController extends Controller
      */
     public function index()
     {
-        //
-        return view('admin/tasks');
+        $data = array();
+        return view('admin.Tasks.index', $data);
     }
 
     /**
@@ -24,13 +27,9 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $req)
+    public function create()
     {
         //
-        $task = new Tasks;
-        $task->task_name=$req->task_name;
-        $task->save();
-        return redirect('admin/tasks');
     }
 
     /**
@@ -41,9 +40,23 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $tasks = Tasks::all();
-        return view('admin/tasks', ["tasks"=>$tasks]); 
+        if(!empty($request->id)){
+            $task = Tasks::where('id', $request->id)->first();
+        } else {
+            $task = new Tasks();
+        }
+        $task->task_name = !empty($request->task_name) ? $request->task_name : NULL;
+        $task->save();
+        $return = array();
+        if($task->id){
+            if(!empty($request->id)){
+                $return['success'] = "Updated";
+            } else {
+                $return['success'] = "Added";
+            }
+        }
+        print json_encode($return);
+        exit;
     }
 
     /**
@@ -63,9 +76,12 @@ class TasksController extends Controller
      * @param  \App\Models\Tasks  $tasks
      * @return \Illuminate\Http\Response
      */
-    public function edit(Tasks $tasks)
+    public function edit($id)
     {
-        //
+        $return = array();
+        $return['task_data'] = Tasks::find($id);
+        print json_encode($return);
+        exit;
     }
 
     /**
@@ -89,5 +105,50 @@ class TasksController extends Controller
     public function destroy(Tasks $tasks)
     {
         //
+    }
+
+    public function getTasksDatatable(Request $request) {
+        $data = $request->all();
+        $search_value = trim($data['search']['value']);
+        $user = auth()->user();
+        $taskQuery = Tasks::select(DB::raw('*'))
+            ->when($search_value, function ($taskQuery) use ($search_value,$request) {
+                return $taskQuery->where(function ($taskQuery) use ($search_value,$request) {
+                    /** @var Builder $taskQuery */
+                    $preparedQ = '%' .$search_value. '%';
+                    $num = 0;
+                    foreach (
+                        [
+                            'task_name',
+                        ] AS $field
+                    ) {
+                        if ($num) {
+                            $taskQuery = $taskQuery->orWhere($field, 'LIKE', $preparedQ);
+                        } else {
+                            $taskQuery = $taskQuery->where($field, 'LIKE', $preparedQ);
+                        }
+                        $num++;
+                    }
+                    return $taskQuery;
+                });
+            });
+        $taskQuery->orderBy('created_at', 'DESC');
+        return datatables()->of($taskQuery)->toJson();
+    }
+
+    public function taskDelete(Request $request)
+    {
+        $task = Tasks::find($request->delete_task_id);
+        $order_detail = OrdersTasks::where('task_id', $request->delete_task_id)->get();
+        if($order_detail->count()>0){
+            \Session::flash('status', 'danger');
+            \Session::flash('message', "Task not allow to delete. Because it's Used.");
+            return redirect()->back();
+        } else {
+            $task->delete();
+            \Session::flash('status', 'success');
+            \Session::flash('message', 'Task Successfully Deleted.');
+        }
+        return redirect()->back();
     }
 }
