@@ -178,8 +178,8 @@
                 </map>
             </div>
         </div>
-        {{ Form::submit('Save', ['class' => 'btn btn-primary module_save_btn']) }}
-        {{ Form::submit('Save & Print', ['class' => 'btn btn-primary module_save_btn']) }}
+        {{ Form::submit('Save', ['id' => 'save_order_btn', 'class' => 'btn btn-primary module_save_btn']) }}
+        {{ Form::submit('Save & Print', ['id' => 'save_and_print_order_btn', 'class' => 'btn btn-primary module_save_btn']) }}
         {{ Form::close() }}
     </div>
 </div>
@@ -297,6 +297,7 @@
                                 data: value
                             });
                         });
+                        $('#name').focus();
                     }
                 });
             <?php } ?>
@@ -304,7 +305,7 @@
             $('img[usemap]').rwdImageMaps();
             $('#car_part_image_tag').hide();
             $(document).on('click', 'area', function () {
-                console.log(car_part_details);
+//                console.log(car_part_details);
                 $('#AddPartTextModal').modal('show');
                 $('.modal-title').html('For - ' + $(this).attr('alt'));
                 var car_part_name = $(this).attr('href');
@@ -319,7 +320,7 @@
                     if(car_part_details[car_part_name].car_part_image != null){
                         $('#car_part_image_tag').show();
                         $('#car_part_image_tag').attr('src', '{{ url("/uploads/car_part_image/") }}/' + car_part_details[car_part_name].car_part_image);
-                        console.log('{{ url("/uploads/car_part_image/") }}/' + car_part_details[car_part_name].car_part_image);
+//                        console.log('{{ url("/uploads/car_part_image/") }}/' + car_part_details[car_part_name].car_part_image);
                     }
                 }
             });
@@ -344,7 +345,7 @@
                 new_details['car_part_image'] = $('#car_part_image').val();
                 new_details['car_part_clicked'] = '1';
                 car_part_details[car_part_name] = new_details;
-                console.log(car_part_details);
+//                console.log(car_part_details);
                 $('#AddPartTextModal').modal('hide');
                 $('#save_order').submit();
                 return false;
@@ -356,14 +357,19 @@
                 $('.bs-callout-warning').toggleClass('hidden', ok);
             });
 
+            $("form input[type=submit]").click(function() {
+                $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+                $(this).attr("clicked", "true");
+            });
             $(document).on('submit', '#save_order', function(){
+                var submit_clicked_btn = $("input[type=submit][clicked=true]").attr('id');
                 var postData = new FormData(this);
                 if($.isEmptyObject(car_part_details)){
                     bootbox.alert('<span class="text-danger">Add atleast one Car Part Details</span>');
                     return false;
                 }
-                console.log('car_part_details ');
-                console.log(car_part_details); 
+//                console.log('car_part_details ');
+//                console.log(car_part_details);
                 var car_part_details_stringify = JSON.stringify(car_part_details);
 //                console.log(car_part_details_stringify); return false;
                 postData.append('car_part_details', car_part_details_stringify);
@@ -382,15 +388,31 @@
                         $('.module_save_btn').removeAttr('disabled', 'disabled');
                         var json = $.parseJSON(response);
                         if (json['success'] == 'Added') {
-                            window.location.href =  json['order_id'] + "/edit";
+                            if(submit_clicked_btn == 'save_and_print_order_btn'){
+                                var order_id = json['order_id'];
+                                window.open(
+                                    "{{ URL::to('/admin/orderPrint/') }}" + "/" + order_id,
+                                    '_blank' // <- This is what makes it open in a new window.
+                                );
+                            } else {
+                                window.location.href =  json['order_id'] + "/edit";
+                            }
                         } else if (json['success'] == 'Updated') {
-                            bootbox.alert('<span class="text-success">Order Successfully Created</span>');
-                            if (json['car_part_details']){
-                                var li_car_part_details = JSON.parse(json['car_part_details']);
-                                if (li_car_part_details != '') {
-                                    $.each(li_car_part_details, function (index, value) {
-                                        car_part_details[value.car_part_name] = value;
-                                    });
+                            if(submit_clicked_btn == 'save_and_print_order_btn'){
+                                var order_id = json['order_id'];
+                                window.open(
+                                    "{{ URL::to('/admin/orderPrint/') }}" + "/" + order_id,
+                                    '_blank' // <- This is what makes it open in a new window.
+                                );
+                            } else {
+                                bootbox.alert('<span class="text-success">Order Successfully Created</span>');
+                                if (json['car_part_details']){
+                                    var li_car_part_details = JSON.parse(json['car_part_details']);
+                                    if (li_car_part_details != '') {
+                                        $.each(li_car_part_details, function (index, value) {
+                                            car_part_details[value.car_part_name] = value;
+                                        });
+                                    }
                                 }
                             }
                         } else {
