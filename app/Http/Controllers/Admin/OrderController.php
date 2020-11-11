@@ -292,6 +292,6 @@ class OrderController extends Controller
         $data['userDetails'] = User::find(\Auth::user()->id);
 //        return view('admin.Order.print', $data);
         $pdf = PDF::loadView('admin.Order.print', $data);
-        return $pdf->stream('orderPrint.pdf');
+        return $pdf->stream('orderPrint_'. $request->order_id .'.pdf');
     }
 }

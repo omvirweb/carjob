@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <title>Order Print</title>
+        <title>Order Print {{ $order_data->id }}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <style>
             table{
